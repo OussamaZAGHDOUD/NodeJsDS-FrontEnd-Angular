@@ -1,0 +1,145 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+   <a class="navbar-brand" style="color:white;">Comic Manager</a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+   <span class="navbar-toggler-icon"></span>
+   </button>
+   <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav mr-auto">
+         <li class="nav-item active">
+            <a class="nav-link" (click)="onOpenModal(null, 'add')">Add Comic <span class="sr-only">(current)</span></a>
+         </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+       <input type="search" (ngModelChange)="searchComics(key.value)" #key="ngModel" ngModel
+       name="key" id="searchTitle" class="form-control mr-sm-2" placeholder="Search comics..." required>     </form>
+   </div>
+ </nav>
+ <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+ <div class="container" id="main-container">
+   <div class="row">
+         <div *ngFor="let comic of comics" class="col-md-6 col-xl-3">
+             <div class="card m-b-50">
+                 <div class="card-body row">
+                     <div class="col-12">
+                         <a href=""><img src="{{comic?.imageUrl}}" alt="" class="img-fluid rounded-circle w-100"></a>
+                     </div>
+                     </div>
+                     <div class="col-10 card-name align-self-center mb-0">
+                         <h5>{{comic?.title}}</h5>
+                         <p class="m-2">{{comic?.author}}</p>
+                     </div>
+
+                 </div>
+                 
+                 <div class="card-body">
+                     <div class=" btn-group btn-group">
+                         <a (click)="onOpenModal(comic, 'edit')" href="#" class="btn btn-primary tooltips" data-placement="top" data-toggle="tooltip" data-original-name="Edit"><i class="fa fa-pencil"></i> </a>
+                         <a (click)="onOpenModal(comic, 'delete')" href="#" class="btn btn-secondary tooltips" data-placement="top" data-toggle="tooltip" data-original-name="Delete"><i class="fa fa-times"></i></a>
+                     </div>
+                    
+                 </div>
+             </div>
+         </div>
+         
+ <!-- Add Comic Modal -->
+ <div class="modal fade" id="addComicModal" tabindex="-1" role="dialog" aria-labelledby="addComicModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-name" id="addComicModalLabel">Add Comic</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+           <form #addForm="ngForm" (ngSubmit)="onAddComic(addForm)">
+           <div class="form-group">
+              <label for="title">Title</label>
+              <input type="text" ngModel name="title" class="form-control" id="title" placeholder="Title" required>
+           </div>
+          
+           <div class="form-group">
+              <label for="phone">Author</label>
+              <input type="text" ngModel name="author" class="form-control" id="author" placeholder="Author" required>
+           </div>
+           
+           <div class="form-group">
+              <label for="phone">Image URL</label>
+              <input type="text" ngModel name="imageUrl" class="form-control" id="imageUrl" placeholder="Image URL" required>
+           </div>
+           <div class="modal-footer">
+              <button type="button" id="add-comic-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+           </div>
+           </form>
+        </div>
+     </div>
+   </div>
+   </div>
+ 
+ <!-- Edit Modal -->
+ <div class="modal fade" id="updateComicModal" tabindex="-1" role="dialog" aria-labelledby="comicEditModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-name" id="updateComicModalLabel">Edit Comic {{editComic?.title}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form #editForm="ngForm">
+               <div class="form-group">
+                  <label for="title">Title</label>
+                  <input type="text" ngModel="{{editComic?.title}}" name="title" class="form-control" id="title"  >
+               </div>
+               <input type="hidden" ngModel="{{editComic?._id}}" name="_id" class="form-control" id="_id" >
+               
+               <div class="form-group">
+                  <label for="author">Author</label>
+                  <input type="text" ngModel="{{editComic?.author}}" name="author" class="form-control" id="author" placeholder="Author">
+               </div>
+              
+               <div class="form-group">
+                  <label for="imageUrl">Image URL</label>
+                  <input type="text" ngModel="{{editComic?.imageUrl}}" name="imageUrl" class="form-control" id="imageUrl" placeholder="Image URL">
+               </div>
+               <div class="modal-footer">
+                  <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                  <button (click)="onUpdateComic(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+ </div>
+ 
+ <!-- Delete Modal -->
+ <div class="modal fade" id="deleteComicModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-name" id="deleteModelLabel">Delete Comic</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <p>Are you sure you want to delete comic {{deleteComic?.title}}?</p>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+               <button (click)="onDeleteComic(deleteComic?._id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+            </div>
+         </div>
+      </div>
+   </div>
+ </div>
+ </div>
+ 
+ <!-- Notification for no comics -->
+ <div *ngIf="comics?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+ <div class="alert alert-info" role="alert">
+   <h4 class="alert-heading">NO Comics!</h4>
+   <p>No Comics were found.</p>
+ </div>
+ </div>
